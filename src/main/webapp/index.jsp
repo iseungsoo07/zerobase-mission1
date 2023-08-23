@@ -2,6 +2,7 @@
 <%@ page import="zerobase.mission1.entity.Wifi" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="zerobase.mission1.Pos" %>
+<%@ page import="zerobase.mission1.entity.WifiDTO" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     WifiRepository wifiRepository = new WifiRepository();
@@ -10,18 +11,7 @@
     double lnt = request.getParameter("lnt") == null ? 0.0 : Double.parseDouble(request.getParameter("lnt"));
 
     Pos pos = new Pos(lat, lnt);
-    ArrayList<Wifi> list = wifiRepository.getWifiList(pos);
-    ArrayList<Double> distances = new ArrayList<>();
-    // 거리 따로 구해와야 함
-    for (int i = 0; i < list.size(); i++) {
-        double distance = Math.sqrt(
-                Math.pow(Math.abs(lnt - Double.parseDouble(list.get(i).getLNT().replace("\"", ""))), 2)
-                        + Math.pow(Math.abs(lat - Double.parseDouble(list.get(i).getLAT().replace("\"", ""))), 2)
-        );
-
-        distances.add(distance);
-    }
-
+    ArrayList<WifiDTO> list = wifiRepository.getWifiList(pos);
 
 %>
 <!DOCTYPE html>
@@ -95,55 +85,55 @@
                 %>
                 <tr>
                     <td>
-                        <%=distances.get(i)%>
+                        <%=list.get(i).getDistance()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_MGR_NO().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_MGR_NO()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_WRDOFC().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_WRDOFC()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_MAIN_NM().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_MAIN_NM()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_ADRES1().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_ADRES1()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_ADRES2().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_ADRES2()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_INSTL_FLOOR().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_INSTL_FLOOR()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_INSTL_TY().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_INSTL_TY()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_INSTL_MBY().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_INSTL_MBY()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_SVC_SE().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_SVC_SE()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_CMCWR().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_CMCWR()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_CNSTC_YEAR().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_CNSTC_YEAR()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_INOUT_DOOR().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_INOUT_DOOR()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_REMARS3().replace("\"", "")%>
+                        <%=list.get(i).getX_SWIFI_REMARS3()%>
                     </td>
                     <td>
-                        <%=list.get(i).getLNT().replace("\"", "")%>
+                        <%=list.get(i).getLNT()%>
                     </td>
                     <td>
-                        <%=list.get(i).getLAT().replace("\"", "")%>
+                        <%=list.get(i).getLAT()%>
                     </td>
                     <td>
-                        <%=list.get(i).getWORK_DTTM().replace("\"", "")%>
+                        <%=list.get(i).getWORK_DTTM()%>
                     </td>
 
                 </tr>

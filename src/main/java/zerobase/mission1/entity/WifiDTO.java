@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Wifi {
+public class WifiDTO {
+    private double distance;
     private String X_SWIFI_MGR_NO; // 관리 번호
     private String X_SWIFI_WRDOFC; // 자치구
     private String X_SWIFI_MAIN_NM; // 와이파이명
