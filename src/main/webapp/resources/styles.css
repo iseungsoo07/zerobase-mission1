@@ -1,0 +1,30 @@
+.buttons {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-collapse: collapse;
+}
+
+table th {
+    background-color: #01aa6f;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid white;
+    color: white;
+}
+
+table td {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    text-align: center;
+}
+
+.table_blank {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    text-align: center;
+}
