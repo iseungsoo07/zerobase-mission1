@@ -1,5 +1,4 @@
 <%@ page import="zerobase.mission1.repository.WifiRepository" %>
-<%@ page import="zerobase.mission1.entity.Wifi" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="zerobase.mission1.Pos" %>
 <%@ page import="zerobase.mission1.entity.WifiDTO" %>
@@ -9,9 +8,12 @@
 
     double lat = request.getParameter("lat") == null ? 0.0 : Double.parseDouble(request.getParameter("lat"));
     double lnt = request.getParameter("lnt") == null ? 0.0 : Double.parseDouble(request.getParameter("lnt"));
+    ArrayList<WifiDTO> list = new ArrayList<>();
 
-    Pos pos = new Pos(lat, lnt);
-    ArrayList<WifiDTO> list = wifiRepository.getWifiList(pos);
+    if (request.getParameter("lat") != null && request.getParameter("lnt") != null) {
+        Pos pos = new Pos(lat, lnt);
+        list = wifiRepository.getWifiList(pos);
+    }
 
 %>
 <!DOCTYPE html>
@@ -34,9 +36,11 @@
     <body>
         <h1>와이파이 정보 구하기</h1>
         <div class="buttons">
-            <a href="/">홈</a>
-            <a href="#">위치 히스토리 목록</a>
-            <a href="load-wifi.jsp">Open API 와이파이 정보 가져오기</a>
+            <a href="/">홈</a> |
+            <a href="history.jsp">위치 히스토리 목록</a> |
+            <a href="load-wifi.jsp">Open API 와이파이 정보 가져오기</a> |
+            <a href="#">북마크 보기</a> |
+            <a href="#">북마크 그룹 관리</a>
         </div>
 
         <form action="/" method="get">
@@ -94,7 +98,8 @@
                         <%=list.get(i).getX_SWIFI_WRDOFC()%>
                     </td>
                     <td>
-                        <%=list.get(i).getX_SWIFI_MAIN_NM()%>
+                        <a href="detail.jsp?distance=<%=list.get(i).getDistance()%>&mgrNo=<%=list.get(i).getX_SWIFI_MGR_NO()%>"><%=list.get(i).getX_SWIFI_MAIN_NM()%>
+                        </a>
                     </td>
                     <td>
                         <%=list.get(i).getX_SWIFI_ADRES1()%>
