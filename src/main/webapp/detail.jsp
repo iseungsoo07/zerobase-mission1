@@ -1,5 +1,5 @@
 <%@ page import="zerobase.mission1.repository.WifiRepository" %>
-<%@ page import="zerobase.mission1.entity.WifiDTO" %>
+<%@ page import="zerobase.mission1.dto.WifiDTO" %>
 <%@ page import="zerobase.mission1.entity.Bookmark" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="zerobase.mission1.repository.BookmarkRepository" %>

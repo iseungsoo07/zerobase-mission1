@@ -1,9 +1,9 @@
 package zerobase.mission1.repository;
 
 import zerobase.mission1.DBConnection;
-import zerobase.mission1.entity.BookmarkDTO;
+import zerobase.mission1.dto.BookmarkDTO;
+import zerobase.mission1.dto.BookmarkGroupDTO;
 import zerobase.mission1.entity.BookmarkGroup;
-import zerobase.mission1.entity.BookmarkGroupDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +18,7 @@ public class BookmarkRepository {
     PreparedStatement pstmt = null;
     ResultSet rs = null;
 
+    // Connection, PreparedStatement, ResultSet 객체 연결 해제를 위한 메소드
     public void disconnect() {
         try {
             if (rs != null && !rs.isClosed()) {
@@ -44,6 +45,8 @@ public class BookmarkRepository {
         }
     }
 
+    // 현재 시간을 SQLite DateTime형에 넣기 위한 메소드
+    // 등록일자, 조회일자, 수정일자를 저장할 때 사용
     private String convertLocalDateTimeToString() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -51,18 +54,19 @@ public class BookmarkRepository {
         return now.format(formatter);
     }
 
+    // 데이터베이스에서 가져온 DateTime형을 LocalDateTime에 넣기 위해선 형 변환이 필요
     private LocalDateTime convertStringToLocalDateTime(String datetimeString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(datetimeString, formatter);
     }
 
     // 북마크 그룹 추가
-    public void createBookmarkGroup(String name, int sequence) {
+    public boolean createBookmarkGroup(String name, int sequence) {
         conn = DBConnection.DBConnect();
 
         String sql = "insert into bookmark_group (BOOKMARK_GROUP_NAME, BOOKMARK_GROUP_SEQ, REG_DATE, MODIFY_DATE) values (?, ?, ?, ?)";
 
-        String formattedDateTime = convertLocalDateTimeToString();
+        String formattedDateTime = convertLocalDateTimeToString(); // 현재 시간을 String 타입으로 변환
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -70,19 +74,27 @@ public class BookmarkRepository {
             pstmt.setInt(2, sequence);
             pstmt.setString(3, formattedDateTime);
 
+            // 처음 북마크 그룹을 추가할 때 수정일자가 빈칸이어야 하는데
+            // 빈칸은 LocalDateTime 형태로 넣을 수 가 없어서 임의의 시간을 저장
+            // 화면에서 보여줄 때 수정일자가 1900년이라면 빈칸을 보여주도록 함
             LocalDateTime temp = LocalDateTime.of(1900, 1, 1, 0, 0, 0);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String tempDate = temp.format(formatter);
 
             pstmt.setString(4, tempDate);
 
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                return true;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             disconnect();
         }
 
+        return false;
     }
 
     // 북마크 그룹 리스트 가져오기
@@ -113,11 +125,12 @@ public class BookmarkRepository {
         } finally {
             disconnect();
         }
+
         return list;
     }
 
     // 북마크 그룹에 북마크를 추가
-    public void createBookmark(int id, String mgrNo) {
+    public boolean createBookmark(int id, String mgrNo) {
         conn = DBConnection.DBConnect();
 
         String sql = "insert into bookmark (BOOKMARK_GROUP_ID, X_SWIFI_MGR_NO, REG_DATE) values (?, ?, ?)";
@@ -127,19 +140,28 @@ public class BookmarkRepository {
             pstmt.setString(2, mgrNo);
             pstmt.setString(3, convertLocalDateTimeToString());
 
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                return true;
+            }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             disconnect();
         }
+
+        return false;
     }
 
     // 북마크 리스트를 가져오기
+    // 북마크 엔티티를 그대로 가져오면 필요없는 정보들이 있기 때문에
+    // BookmarkDTO 객체를 새로 생성해서 필요한 정보만 사용
     public ArrayList<BookmarkDTO> getBookmarkList() {
         conn = DBConnection.DBConnect();
         ArrayList<BookmarkDTO> list = new ArrayList<>();
 
+        // wifi, bookmark, bookmark_group 테이블을 조인해서 필요한 정보를 가져옴
         String sql = "select b.bookmark_id, bg.bookmark_group_name, w.x_swifi_main_nm, b.reg_date" +
                 " from bookmark b join bookmark_group bg on b.bookmark_group_id = bg.bookmark_group_id" +
                 " join wifi w on b.X_SWIFI_MGR_NO = w.X_SWIFI_MGR_NO";
@@ -167,6 +189,8 @@ public class BookmarkRepository {
     }
 
     // 북마크 수정 삭제를 위한 북마크 그룹 하나의 정보 가져오기
+    // 북마크 수정 삭제 페이지에는 북마크 이름과 순서만 있으면 됨
+    // 이 두 정보만 가지고 있는 BookmarkGroupDTO 객체 생성
     public BookmarkGroupDTO getBookmarkGroupInfo(int id) {
         conn = DBConnection.DBConnect();
         BookmarkGroupDTO bookmarkGroup = new BookmarkGroupDTO();
@@ -192,7 +216,8 @@ public class BookmarkRepository {
     }
 
     // 북마크 그룹 정보 수정
-    public void updateBookmarkGroup(String bookmarkGroupName, int bookmarkGroupSeq, int id) {
+    // 수정하면 수정일자를 변경하고 화면에 수정일자가 나오도록 함
+    public boolean updateBookmarkGroup(String bookmarkGroupName, int bookmarkGroupSeq, int id) {
         conn = DBConnection.DBConnect();
 
         String sql = "update bookmark_group set BOOKMARK_GROUP_NAME = ?, BOOKMARK_GROUP_SEQ = ?, MODIFY_DATE = ? where BOOKMARK_GROUP_ID = ?";
@@ -203,15 +228,21 @@ public class BookmarkRepository {
             pstmt.setString(3, convertLocalDateTimeToString());
             pstmt.setInt(4, id);
 
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                return true;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             disconnect();
         }
 
+        return false;
     }
 
+    // 북마크 그룹 삭제
     public void deleteBookmarkGroup(int id) {
         conn = DBConnection.DBConnect();
 

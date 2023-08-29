@@ -7,7 +7,7 @@ import zerobase.mission1.ApiExplorer;
 import zerobase.mission1.DBConnection;
 import zerobase.mission1.Pos;
 import zerobase.mission1.entity.PositionHisotry;
-import zerobase.mission1.entity.WifiDTO;
+import zerobase.mission1.dto.WifiDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

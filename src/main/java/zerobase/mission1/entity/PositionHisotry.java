@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class PositionHisotry {
-    private int historyId;
-    private double lnt;
-    private double lat;
-    private LocalDateTime searchDate;
+    private int historyId; // 히스토리 번호
+    private double lnt; // x좌표
+    private double lat; // y좌표
+    private LocalDateTime searchDate; // 조회 일자
 }

@@ -1,4 +1,4 @@
-package zerobase.mission1.entity;
+package zerobase.mission1.dto;
 
 import lombok.Getter;
 import lombok.Setter;

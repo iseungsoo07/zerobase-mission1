@@ -1,7 +1,7 @@
 <%@ page import="zerobase.mission1.repository.WifiRepository" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="zerobase.mission1.Pos" %>
-<%@ page import="zerobase.mission1.entity.WifiDTO" %>
+<%@ page import="zerobase.mission1.dto.WifiDTO" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     WifiRepository wifiRepository = new WifiRepository();
