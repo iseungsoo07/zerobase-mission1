@@ -1,12 +1,18 @@
 <%@ page import="zerobase.mission1.repository.WifiRepository" %>
 <%@ page import="zerobase.mission1.entity.WifiDTO" %>
+<%@ page import="zerobase.mission1.entity.Bookmark" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="zerobase.mission1.repository.BookmarkRepository" %>
+<%@ page import="zerobase.mission1.entity.BookmarkGroup" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     WifiRepository wifiRepository = new WifiRepository();
+    BookmarkRepository bookmarkRepository = new BookmarkRepository();
 
     WifiDTO wifiDTO = wifiRepository.getWifi(request.getParameter("mgrNo"));
     double distance = Double.parseDouble(request.getParameter("distance"));
 
+    ArrayList<BookmarkGroup> bookmarkGroupList = bookmarkRepository.getBookmarkGroupList();
 %>
 <!DOCTYPE html>
 <html>
@@ -18,17 +24,25 @@
         <h1>와이파이 정보 구하기</h1>
         <div class="buttons">
             <a href="/">홈</a> |
-            <a href="#">위치 히스토리 목록</a> |
+            <a href="history.jsp">위치 히스토리 목록</a> |
             <a href="load-wifi.jsp">Open API 와이파이 정보 가져오기</a> |
-            <a href="#">북마크 보기</a> |
-            <a href="#">북마크 그룹 관리</a>
+            <a href="bookmark-list.jsp">북마크 보기</a> |
+            <a href="bookmark-group.jsp">북마크 그룹 관리</a>
         </div>
 
-        <form action="">
-            <select name="bookmark_group" id="bookmark_group">
-                <option value="">1</option>
-                <option value="">2</option>
-                <option value="">3</option>
+        <form action="bookmark-add-submit.jsp" method="post">
+            <input type="hidden" name="mgrNo" value="<%=wifiDTO.getX_SWIFI_MGR_NO()%>">
+            <select name="bookmark_group_id" id="bookmark_group">
+                <option value="">북마크 그룹 이름 선택</option>
+                <%
+                    for (int i = 0; i < bookmarkGroupList.size(); i++) {
+                %>
+                <option value="<%=bookmarkGroupList.get(i).getBookmarkGroupId()%>">
+                    <%=bookmarkGroupList.get(i).getBookmarkGroupName()%>
+                </option>
+                <%
+                    }
+                %>
             </select>
             <input type="submit" value="북마크 추가하기">
         </form>

@@ -21,8 +21,8 @@
             <a href="/">홈</a> |
             <a href="history.jsp">위치 히스토리 목록</a> |
             <a href="load-wifi.jsp">Open API 와이파이 정보 가져오기</a> |
-            <a href="#">북마크 보기</a> |
-            <a href="#">북마크 그룹 관리</a>
+            <a href="bookmark-list.jsp">북마크 보기</a> |
+            <a href="bookmark-group.jsp">북마크 그룹 관리</a>
         </div>
 
         <table>
@@ -48,8 +48,8 @@
                     </td>
                     <td><%=histories.get(i).getSearchDate()%>
                     </td>
-                    <td>
-                        <a href="delete_history.jsp?id=<%=histories.get(i).getHistoryId()%>">
+                    <td style="text-align: center">
+                        <a href="delete-history.jsp?id=<%=histories.get(i).getHistoryId()%>">
                             <input type="button" value="삭제">
                         </a>
                     </td>

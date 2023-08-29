@@ -50,7 +50,7 @@ public class WifiRepository {
     }
 
     // api로 가져온 wifi 정보 DB에 insert
-    public void insertDB() {
+    public boolean insertDB() {
         conn = DBConnection.DBConnect();
 
         int start = 0;
@@ -100,15 +100,18 @@ public class WifiRepository {
                     pstmt.setDouble(15, (temp.get("LNT").getAsDouble()));
                     pstmt.setString(16, (temp.get("WORK_DTTM")).getAsString());
 
-                    pstmt.executeUpdate();
+                    int affected = pstmt.executeUpdate();
+                    if (affected > 0) {
+                        return true;
+                    }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         } finally {
             disconnect();
         }
-
+        return false;
     }
 
     public ArrayList<WifiDTO> getWifiList(Pos pos) {
@@ -117,12 +120,13 @@ public class WifiRepository {
 
         saveHistory(pos);
 
-        String sql = "select round(sqrt(power(abs(w.lat - ?), 2) + power(abs(w.lnt - ?), 2)), 4) as distance, * from wifi w order by distance limit 20";
+        String sql = "SELECT round(6371 * 2 * ASIN(SQRT(POWER(SIN(((LAT - ?) * PI() / 180) / 2), 2) + COS(? * PI() / 180) * COS((LAT * PI() / 180)) * POWER(SIN(((LNT - ?) * PI() / 180) / 2), 2))), 4) AS distance, * from wifi order by distance limit 20;";
 
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setDouble(1, pos.lat);
-            pstmt.setDouble(2, pos.lnt);
+            pstmt.setDouble(2, pos.lat);
+            pstmt.setDouble(3, pos.lnt);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -204,10 +208,7 @@ public class WifiRepository {
 
         String sql = "insert into position_history (LNT, LAT, SEARCH_DATE) values (?, ?, ?)";
 
-        LocalDateTime now = LocalDateTime.now();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedDateTime = now.format(formatter);
+        String formattedDateTime = convertLocalDateTimeToString();
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -263,7 +264,14 @@ public class WifiRepository {
         }
     }
 
-    private static LocalDateTime convertStringToLocalDateTime(String datetimeString) {
+    private String convertLocalDateTimeToString() {
+        LocalDateTime now = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return now.format(formatter);
+    }
+
+    private LocalDateTime convertStringToLocalDateTime(String datetimeString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.parse(datetimeString, formatter);
     }

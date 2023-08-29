@@ -39,8 +39,8 @@
             <a href="/">홈</a> |
             <a href="history.jsp">위치 히스토리 목록</a> |
             <a href="load-wifi.jsp">Open API 와이파이 정보 가져오기</a> |
-            <a href="#">북마크 보기</a> |
-            <a href="#">북마크 그룹 관리</a>
+            <a href="bookmark-list.jsp">북마크 보기</a> |
+            <a href="bookmark-group.jsp">북마크 그룹 관리</a>
         </div>
 
         <form action="/" method="get">
@@ -81,7 +81,7 @@
                     if (request.getParameter("lat") == null && request.getParameter("lnt") == null) {
                 %>
                 <tr>
-                    <td colspan="17">위치 정보를 입력한 후에 조회해 주세요.</td>
+                    <td colspan="17" class="table_blank">위치 정보를 입력한 후에 조회해 주세요.</td>
                 </tr>
                 <%
                 } else {

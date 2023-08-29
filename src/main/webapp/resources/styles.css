@@ -17,10 +17,17 @@ table th {
     color: white;
 }
 
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tr:hover {
+    background-color: #f2f2f2;
+}
+
 table td {
     border: 1px solid rgba(0, 0, 0, 0.3);
     padding: 20px;
-    text-align: center;
 }
 
 .table_blank {
