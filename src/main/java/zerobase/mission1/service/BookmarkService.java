@@ -26,6 +26,10 @@ public class BookmarkService {
         return bookmarkRepository.getBookmarkList();
     }
 
+    public BookmarkDTO getBookmarkInformation(int id) {
+        return bookmarkRepository.getBookmarkInfo(id);
+    }
+
     public BookmarkGroupDTO getBookmarkGroupInformation(int id) {
         return bookmarkRepository.getBookmarkGroupInfo(id);
     }
@@ -36,6 +40,10 @@ public class BookmarkService {
 
     public boolean removeBookmarkGroup(int id) {
         return bookmarkRepository.deleteBookmarkGroup(id);
+    }
+
+    public boolean removeBookmark(int id) {
+        return bookmarkRepository.deleteBookmark(id);
     }
 
 }

@@ -54,7 +54,7 @@
                     <%=bookmarkList.get(i).getRegDate()%>
                 </td>
                 <td style="text-align: center">
-                    <a href="">삭제</a>
+                    <a href="bookmark-delete.jsp?id=<%=bookmarkList.get(i).getBookmarkId()%>">삭제</a>
                 </td>
             </tr>
             <% }

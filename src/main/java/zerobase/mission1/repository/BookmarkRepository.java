@@ -217,6 +217,39 @@ public class BookmarkRepository {
         return bookmarkGroup;
     }
 
+    // 북마크를 삭제할 때 북마크 하나에 대한 정보가 필요
+    // 북마크 하나에 대한 정보를 가져오기 위한 메소드
+    public BookmarkDTO getBookmarkInfo(int id) {
+        conn = DBConnection.DBConnect();
+
+        String sql = "SELECT b.BOOKMARK_ID, bg.BOOKMARK_GROUP_NAME, w.X_SWIFI_MAIN_NM, b.REG_DATE" +
+                " FROM BOOKMARK b JOIN BOOKMARK_GROUP bg ON b.BOOKMARK_GROUP_ID = bg.BOOKMARK_GROUP_ID" +
+                " JOIN WIFI w ON b.X_SWIFI_MGR_NO = w.X_SWIFI_MGR_NO where BOOKMARK_ID = ?";
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, id);
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                BookmarkDTO bookmarkDTO = new BookmarkDTO();
+                bookmarkDTO.setBookmarkId(rs.getInt("bookmark_id"));
+                bookmarkDTO.setBookmarkGroupName(rs.getString("bookmark_group_name"));
+                bookmarkDTO.setWifiName(rs.getString("x_swifi_main_nm"));
+                bookmarkDTO.setRegDate(convertStringToLocalDateTime(rs.getString("reg_date")));
+
+                return bookmarkDTO;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            disconnect();
+        }
+        return null;
+    }
+
     // 북마크 그룹 정보 수정
     // 수정하면 수정일자를 변경하고 화면에 수정일자가 나오도록 함
     public boolean updateBookmarkGroup(String bookmarkGroupName, int bookmarkGroupSeq, int id) {
@@ -261,6 +294,29 @@ public class BookmarkRepository {
                 return true;
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            disconnect();
+        }
+
+        return false;
+    }
+
+    // 북마크 삭제
+    public boolean deleteBookmark(int id) {
+        conn = DBConnection.DBConnect();
+
+        String sql = "DELETE FROM BOOKMARK WHERE BOOKMARK_ID = ?";
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, id);
+
+            int res = pstmt.executeUpdate();
+            if (res > 0) {
+                return true;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

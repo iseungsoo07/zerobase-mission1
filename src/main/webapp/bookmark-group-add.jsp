@@ -15,7 +15,7 @@
             <a href="bookmark-group.jsp">북마크 그룹 관리</a>
         </div>
 
-        <form action="bookmark-group-add-submit.jsp">
+        <form action="bookmark-group-add-submit.jsp" method="post">
             <table>
                 <tr>
                     <th>북마크 이름</th>

@@ -34,7 +34,12 @@
                 </tr>
             </thead>
             <tbody>
+                <% if (histories.size() == 0) { %>
+                <tr>
+                    <td colspan="5" class="table_blank">히스토리 정보가 존재하지 않습니다.</td>
+                </tr>
                 <%
+                } else {
                     for (int i = 0; i < histories.size(); i++) {
                 %>
                 <tr>
@@ -53,6 +58,7 @@
                     </td>
                 </tr>
                 <%
+                        }
                     }
                 %>
             </tbody>

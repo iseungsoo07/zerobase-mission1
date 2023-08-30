@@ -118,11 +118,7 @@ public class WifiRepository {
                     pstmt.setDouble(15, (temp.get("LNT").getAsDouble()));
                     pstmt.setString(16, (temp.get("WORK_DTTM")).getAsString());
 
-                    int res = pstmt.executeUpdate();
-
-                    if (res > 0) {
-                        return true;
-                    }
+                    pstmt.executeUpdate();
                 }
             }
         } catch (Exception e) {
@@ -130,7 +126,7 @@ public class WifiRepository {
         } finally {
             disconnect();
         }
-        return false;
+        return true;
     }
 
     // 현재 내 위치로부터 가장 가까운 와이파이 목록을 20개만 보여주는 메소드
@@ -147,9 +143,9 @@ public class WifiRepository {
 
         try {
             pstmt = conn.prepareStatement(sql);
-            pstmt.setDouble(1, pos.lat);
-            pstmt.setDouble(2, pos.lat);
-            pstmt.setDouble(3, pos.lnt);
+            pstmt.setDouble(1, pos.lnt);
+            pstmt.setDouble(2, pos.lnt);
+            pstmt.setDouble(3, pos.lat);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
