@@ -6,8 +6,8 @@ import com.google.gson.JsonParser;
 import zerobase.mission1.ApiExplorer;
 import zerobase.mission1.DBConnection;
 import zerobase.mission1.Pos;
-import zerobase.mission1.entity.PositionHisotry;
 import zerobase.mission1.dto.WifiDTO;
+import zerobase.mission1.entity.PositionHisotry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,6 +23,7 @@ public class WifiRepository {
     ResultSet rs = null;
     ApiExplorer apiExplorer = new ApiExplorer();
 
+    // Connection, PreparedStatement, ResultSet 객체 연결 해제를 위한 메소드
     public void disconnect() {
         try {
             if (rs != null && !rs.isClosed()) {
@@ -49,12 +50,28 @@ public class WifiRepository {
         }
     }
 
-    // api로 가져온 wifi 정보 DB에 insert
+    // 현재 시간을 SQLite DateTime형에 넣기 위한 메소드
+    // 등록일자, 조회일자, 수정일자를 저장할 때 사용
+    private String convertLocalDateTimeToString() {
+        LocalDateTime now = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return now.format(formatter);
+    }
+
+    // 데이터베이스에서 가져온 DateTime형을 LocalDateTime에 넣기 위해선 형 변환이 필요
+    private LocalDateTime convertStringToLocalDateTime(String datetimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(datetimeString, formatter);
+    }
+
+    // Open API wifi 정보를 DB에 추가
     public boolean insertDB() {
         conn = DBConnection.DBConnect();
 
         int start = 0;
         int end = 0;
+
         try {
             int total = apiExplorer.getTotalCount();
 
@@ -79,7 +96,7 @@ public class WifiRepository {
                 for (int j = 0; j < jsonArray.size(); j++) {
                     JsonObject temp = (JsonObject) jsonArray.get(j);
 
-                    String sql = "insert into wifi values (?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?)";
+                    String sql = "INSERT INTO WIFI VALUES (?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,? ,? ,? ,?)";
 
                     pstmt = conn.prepareStatement(sql);
 
@@ -100,8 +117,9 @@ public class WifiRepository {
                     pstmt.setDouble(15, (temp.get("LNT").getAsDouble()));
                     pstmt.setString(16, (temp.get("WORK_DTTM")).getAsString());
 
-                    int affected = pstmt.executeUpdate();
-                    if (affected > 0) {
+                    int res = pstmt.executeUpdate();
+
+                    if (res > 0) {
                         return true;
                     }
                 }
@@ -114,13 +132,17 @@ public class WifiRepository {
         return false;
     }
 
+    // 현재 내 위치로부터 가장 가까운 와이파이 목록을 20개만 보여주는 메소드
+    // 두 위도와 경도 사이의 거리는 harversine(하버사인) 공식을 사용
     public ArrayList<WifiDTO> getWifiList(Pos pos) {
         conn = DBConnection.DBConnect();
         ArrayList<WifiDTO> list = new ArrayList<>();
 
-        saveHistory(pos);
+        saveHistory(pos); // 와이파이 목록을 조회할 때 위치 정보를 히스토리에 저장
 
-        String sql = "SELECT round(6371 * 2 * ASIN(SQRT(POWER(SIN(((LAT - ?) * PI() / 180) / 2), 2) + COS(? * PI() / 180) * COS((LAT * PI() / 180)) * POWER(SIN(((LNT - ?) * PI() / 180) / 2), 2))), 4) AS distance, * from wifi order by distance limit 20;";
+        String sql = "SELECT ROUND(6371 * 2 * " +
+                "ASIN(SQRT(POWER(SIN(((LAT - ?) * PI() / 180) / 2), 2) + COS(? * PI() / 180) * COS((LAT * PI() / 180)) " +
+                "* POWER(SIN(((LNT - ?) * PI() / 180) / 2), 2))), 4) AS distance, * FROM WIFI ORDER BY distance LIMIT 20;";
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -160,11 +182,13 @@ public class WifiRepository {
         return list;
     }
 
+    // 와이파이 상세 정보를 가져오기 위한 메소드
+    // 와이파이 테이블의 PK인 X_SWIFI_MGR_NO를 이용해서 조회
     public WifiDTO getWifi(String id) {
         conn = DBConnection.DBConnect();
-
-        String sql = "select * from wifi where X_SWIFI_MGR_NO = ?";
         WifiDTO wifi = null;
+
+        String sql = "SELECT * FROM WIFI WHERE X_SWIFI_MGR_NO = ?";
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -193,7 +217,6 @@ public class WifiRepository {
 
             }
 
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -203,12 +226,14 @@ public class WifiRepository {
         return wifi;
     }
 
-    public void saveHistory(Pos pos) {
+    // 히스토리 저장을 위한 메소드
+    // 현재 위치를 파라미터로 받아서 저장한다.
+    public boolean saveHistory(Pos pos) {
         conn = DBConnection.DBConnect();
 
-        String sql = "insert into position_history (LNT, LAT, SEARCH_DATE) values (?, ?, ?)";
+        String sql = "INSERT INTO POSITION_HISTORY (LNT, LAT, SEARCH_DATE) VALUES (?, ?, ?)";
 
-        String formattedDateTime = convertLocalDateTimeToString();
+        String formattedDateTime = convertLocalDateTimeToString(); // 현재 시간을 String 타입으로 변경해서 조회일자로 사용
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -216,18 +241,26 @@ public class WifiRepository {
             pstmt.setDouble(2, pos.lat);
             pstmt.setString(3, formattedDateTime);
 
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                return true;
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        return false;
     }
 
+    // 히스토리 목록을 보여주기 위한 메소드
     public ArrayList<PositionHisotry> getHistory() {
         conn = DBConnection.DBConnect();
         ArrayList<PositionHisotry> list = new ArrayList<>();
 
-        String sql = "select * from position_history order by history_id desc";
+        String sql = "SELECT * FROM POSITION_HISTORY ORDER BY HISTORY_ID DESC";
+
         try {
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -248,31 +281,29 @@ public class WifiRepository {
         return list;
     }
 
-    public void deleteHistory(int id) {
+    // 히스토리 내역을 삭제하는 메소드
+    // 히스토리 번호를 파라미터로 받아서 사용
+    public boolean deleteHistory(int id) {
         conn = DBConnection.DBConnect();
 
-        String sql = "delete from position_history where history_id = ?";
+        String sql = "DELETE FROM POSITION_HISTORY WHERE HISTORY_ID = ?";
+
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
 
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                return true;
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             disconnect();
         }
-    }
 
-    private String convertLocalDateTimeToString() {
-        LocalDateTime now = LocalDateTime.now();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return now.format(formatter);
-    }
-
-    private LocalDateTime convertStringToLocalDateTime(String datetimeString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.parse(datetimeString, formatter);
+        return false;
     }
 }

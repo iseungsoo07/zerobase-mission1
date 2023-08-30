@@ -64,7 +64,7 @@ public class BookmarkRepository {
     public boolean createBookmarkGroup(String name, int sequence) {
         conn = DBConnection.DBConnect();
 
-        String sql = "insert into bookmark_group (BOOKMARK_GROUP_NAME, BOOKMARK_GROUP_SEQ, REG_DATE, MODIFY_DATE) values (?, ?, ?, ?)";
+        String sql = "INSERT INTO BOOKMARK_GROUP (BOOKMARK_GROUP_NAME, BOOKMARK_GROUP_SEQ, REG_DATE, MODIFY_DATE) VALUES (?, ?, ?, ?)";
 
         String formattedDateTime = convertLocalDateTimeToString(); // 현재 시간을 String 타입으로 변환
 
@@ -102,7 +102,7 @@ public class BookmarkRepository {
         conn = DBConnection.DBConnect();
         ArrayList<BookmarkGroup> list = new ArrayList<>();
 
-        String sql = "select bookmark_group_id, bookmark_group_name, bookmark_group_seq, reg_date, modify_date from bookmark_group order by bookmark_group_seq";
+        String sql = "SELECT * FROM BOOKMARK_GROUP ORDER BY BOOKMARK_GROUP_SEQ";
         try {
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -133,7 +133,8 @@ public class BookmarkRepository {
     public boolean createBookmark(int id, String mgrNo) {
         conn = DBConnection.DBConnect();
 
-        String sql = "insert into bookmark (BOOKMARK_GROUP_ID, X_SWIFI_MGR_NO, REG_DATE) values (?, ?, ?)";
+        String sql = "INSERT INTO BOOKMARK (BOOKMARK_GROUP_ID, X_SWIFI_MGR_NO, REG_DATE) VALUES (?, ?, ?)";
+
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
@@ -162,9 +163,9 @@ public class BookmarkRepository {
         ArrayList<BookmarkDTO> list = new ArrayList<>();
 
         // wifi, bookmark, bookmark_group 테이블을 조인해서 필요한 정보를 가져옴
-        String sql = "select b.bookmark_id, bg.bookmark_group_name, w.x_swifi_main_nm, b.reg_date" +
-                " from bookmark b join bookmark_group bg on b.bookmark_group_id = bg.bookmark_group_id" +
-                " join wifi w on b.X_SWIFI_MGR_NO = w.X_SWIFI_MGR_NO";
+        String sql = "SELECT b.BOOKMARK_ID, bg.BOOKMARK_GROUP_NAME, w.X_SWIFI_MAIN_NM, b.REG_DATE" +
+                " FROM BOOKMARK b JOIN BOOKMARK_GROUP bg ON b.BOOKMARK_GROUP_ID = bg.BOOKMARK_GROUP_ID" +
+                " JOIN WIFI w ON b.X_SWIFI_MGR_NO = w.X_SWIFI_MGR_NO";
 
         try {
             pstmt = conn.prepareStatement(sql);
@@ -195,7 +196,8 @@ public class BookmarkRepository {
         conn = DBConnection.DBConnect();
         BookmarkGroupDTO bookmarkGroup = new BookmarkGroupDTO();
 
-        String sql = "select bookmark_group_name, bookmark_group_seq from bookmark_group where bookmark_group_id = ?";
+        String sql = "SELECT BOOKMARK_GROUP_NAME, BOOKMARK_GROUP_SEQ FROM BOOKMARK_GROUP WHERE BOOKMARK_GROUP_ID = ?";
+
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
@@ -220,7 +222,8 @@ public class BookmarkRepository {
     public boolean updateBookmarkGroup(String bookmarkGroupName, int bookmarkGroupSeq, int id) {
         conn = DBConnection.DBConnect();
 
-        String sql = "update bookmark_group set BOOKMARK_GROUP_NAME = ?, BOOKMARK_GROUP_SEQ = ?, MODIFY_DATE = ? where BOOKMARK_GROUP_ID = ?";
+        String sql = "UPDATE BOOKMARK_GROUP SET BOOKMARK_GROUP_NAME = ?, BOOKMARK_GROUP_SEQ = ?, MODIFY_DATE = ? WHERE BOOKMARK_GROUP_ID = ?";
+
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, bookmarkGroupName);
@@ -246,7 +249,8 @@ public class BookmarkRepository {
     public void deleteBookmarkGroup(int id) {
         conn = DBConnection.DBConnect();
 
-        String sql = "delete from bookmark_group where bookmark_group_id = ?";
+        String sql = "DELETE FROM BOOKMARK_GROUP WHERE BOOKMARK_GROUP_ID = ?";
+
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
