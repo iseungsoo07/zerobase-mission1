@@ -1,12 +1,4 @@
-<%@ page import="zerobase.mission1.repository.WifiRepository" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="zerobase.mission1.entity.PositionHisotry" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%
-    WifiRepository wifiRepository = new WifiRepository();
-
-    ArrayList<PositionHisotry> histories = wifiRepository.getHistory();
-%>
 <!DOCTYPE html>
 <html>
     <head>

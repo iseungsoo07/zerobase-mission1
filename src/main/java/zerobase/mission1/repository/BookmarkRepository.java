@@ -246,7 +246,7 @@ public class BookmarkRepository {
     }
 
     // 북마크 그룹 삭제
-    public void deleteBookmarkGroup(int id) {
+    public boolean deleteBookmarkGroup(int id) {
         conn = DBConnection.DBConnect();
 
         String sql = "DELETE FROM BOOKMARK_GROUP WHERE BOOKMARK_GROUP_ID = ?";
@@ -255,11 +255,18 @@ public class BookmarkRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, id);
 
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
+
+            if (res > 0) {
+                return true;
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             disconnect();
         }
+
+        return false;
     }
 }

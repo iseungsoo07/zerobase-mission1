@@ -1,18 +1,17 @@
-<%@ page import="zerobase.mission1.repository.WifiRepository" %>
 <%@ page import="zerobase.mission1.dto.WifiDTO" %>
-<%@ page import="zerobase.mission1.entity.Bookmark" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="zerobase.mission1.repository.BookmarkRepository" %>
 <%@ page import="zerobase.mission1.entity.BookmarkGroup" %>
+<%@ page import="zerobase.mission1.service.BookmarkService" %>
+<%@ page import="zerobase.mission1.service.WifiService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    WifiRepository wifiRepository = new WifiRepository();
-    BookmarkRepository bookmarkRepository = new BookmarkRepository();
+    WifiService wifiService = new WifiService();
+    BookmarkService bookmarkService = new BookmarkService();
 
-    WifiDTO wifiDTO = wifiRepository.getWifi(request.getParameter("mgrNo"));
+    WifiDTO wifiDTO = wifiService.getWifi(request.getParameter("mgrNo"));
     double distance = Double.parseDouble(request.getParameter("distance"));
 
-    ArrayList<BookmarkGroup> bookmarkGroupList = bookmarkRepository.getBookmarkGroupList();
+    ArrayList<BookmarkGroup> bookmarkGroupList = bookmarkService.getBookmarkGroups();
 %>
 <!DOCTYPE html>
 <html>

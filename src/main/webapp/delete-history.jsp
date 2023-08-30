@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="zerobase.mission1.repository.WifiRepository" %>
+<%@ page import="zerobase.mission1.service.WifiService" %>
 <%
     request.setCharacterEncoding("UTF-8");
 %>
@@ -8,11 +8,11 @@
 
     if (answer) {
         <%
-            WifiRepository wifiRepository = new WifiRepository();
-            wifiRepository.deleteHistory(Integer.parseInt(request.getParameter("id")));
+            WifiService wifiService = new WifiService();
+            wifiService.removeHistory(Integer.parseInt(request.getParameter("id")));
         %>
         alert("삭제 완료되었습니다.");
-        location.href="history.jsp";
+        location.href = "history.jsp";
     } else {
         history.go(-1);
     }

@@ -1,11 +1,10 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="zerobase.mission1.repository.BookmarkRepository" %>
 <%@ page import="zerobase.mission1.entity.BookmarkGroup" %>
+<%@ page import="zerobase.mission1.service.BookmarkService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    BookmarkRepository bookmarkRepository = new BookmarkRepository();
-
-    ArrayList<BookmarkGroup> bookmarkGroupList = bookmarkRepository.getBookmarkGroupList();
+    BookmarkService bookmarkService = new BookmarkService();
+    ArrayList<BookmarkGroup> bookmarkGroupList = bookmarkService.getBookmarkGroups();
 %>
 <!DOCTYPE html>
 <html>

@@ -66,7 +66,7 @@ public class WifiRepository {
     }
 
     // Open API wifi 정보를 DB에 추가
-    public boolean insertDB() {
+    public boolean saveWifiData() {
         conn = DBConnection.DBConnect();
 
         int start = 0;
@@ -82,6 +82,7 @@ public class WifiRepository {
                 start = 1000 * i + 1;
 
                 if (i == lastPage) {
+                    end = start + lastPageRemain - 1;
                 } else {
                     end = 1000 * (i + 1);
                 }

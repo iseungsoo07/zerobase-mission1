@@ -1,11 +1,11 @@
-<%@ page import="zerobase.mission1.repository.BookmarkRepository" %>
 <%@ page import="zerobase.mission1.dto.BookmarkGroupDTO" %>
+<%@ page import="zerobase.mission1.service.BookmarkService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    BookmarkRepository bookmarkRepository = new BookmarkRepository();
+    BookmarkService bookmarkService = new BookmarkService();
 
     int id = Integer.parseInt(request.getParameter("id"));
-    BookmarkGroupDTO bookmarkGroupInfo = bookmarkRepository.getBookmarkGroupInfo(id);
+    BookmarkGroupDTO bookmarkGroupInfo = bookmarkService.getBookmarkGroupInformation(id);
 
 %>
 <!DOCTYPE html>

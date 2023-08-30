@@ -1,17 +1,16 @@
 <%@ page import="zerobase.mission1.ApiExplorer" %>
-<%@ page import="zerobase.mission1.repository.WifiRepository" %>
-<%@ page import="java.io.PrintWriter" %>
+<%@ page import="zerobase.mission1.service.WifiService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     ApiExplorer apiExplorer = new ApiExplorer();
-    WifiRepository wifiRepository = new WifiRepository();
+    WifiService wifiService = new WifiService();
     int totalCnt = 0;
     boolean isFirst = true;
 
     try {
         totalCnt = Integer.parseInt(String.valueOf(apiExplorer.getTotalCount()));
 
-        if (!wifiRepository.insertDB()) {
+        if (!wifiService.saveWifiData()) {
             isFirst = false;
         }
 

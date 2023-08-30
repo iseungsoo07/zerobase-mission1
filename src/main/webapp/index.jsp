@@ -1,10 +1,10 @@
-<%@ page import="zerobase.mission1.repository.WifiRepository" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="zerobase.mission1.Pos" %>
 <%@ page import="zerobase.mission1.dto.WifiDTO" %>
+<%@ page import="zerobase.mission1.service.WifiService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    WifiRepository wifiRepository = new WifiRepository();
+    WifiService wifiService = new WifiService();
 
     double lat = request.getParameter("lat") == null ? 0.0 : Double.parseDouble(request.getParameter("lat"));
     double lnt = request.getParameter("lnt") == null ? 0.0 : Double.parseDouble(request.getParameter("lnt"));
@@ -12,7 +12,7 @@
 
     if (request.getParameter("lat") != null && request.getParameter("lnt") != null) {
         Pos pos = new Pos(lat, lnt);
-        list = wifiRepository.getWifiList(pos);
+        list = wifiService.getWifiList(pos);
     }
 
 %>

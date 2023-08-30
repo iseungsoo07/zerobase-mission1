@@ -1,13 +1,10 @@
-<%@ page import="zerobase.mission1.repository.WifiRepository" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="zerobase.mission1.entity.PositionHisotry" %>
-<%@ page import="zerobase.mission1.repository.BookmarkRepository" %>
-<%@ page import="zerobase.mission1.entity.Bookmark" %>
 <%@ page import="zerobase.mission1.dto.BookmarkDTO" %>
+<%@ page import="zerobase.mission1.service.BookmarkService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    BookmarkRepository bookmarkRepository = new BookmarkRepository();
-    ArrayList<BookmarkDTO> bookmarkList = bookmarkRepository.getBookmarkList();
+    BookmarkService bookmarkService = new BookmarkService();
+    ArrayList<BookmarkDTO> bookmarkList = bookmarkService.getBookmarks();
 %>
 <!DOCTYPE html>
 <html>
