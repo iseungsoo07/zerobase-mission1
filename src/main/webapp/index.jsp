@@ -1,5 +1,4 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="zerobase.mission1.Pos" %>
 <%@ page import="zerobase.mission1.dto.WifiDTO" %>
 <%@ page import="zerobase.mission1.service.WifiService" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -8,12 +7,10 @@
 
     double lat = request.getParameter("lat") == null ? 0.0 : Double.parseDouble(request.getParameter("lat"));
     double lnt = request.getParameter("lnt") == null ? 0.0 : Double.parseDouble(request.getParameter("lnt"));
-    ArrayList<WifiDTO> list = new ArrayList<>();
 
-    if (request.getParameter("lat") != null && request.getParameter("lnt") != null) {
-        Pos pos = new Pos(lat, lnt);
-        list = wifiService.getWifiList(pos);
-    }
+    ArrayList<WifiDTO> list = (ArrayList<WifiDTO>) session.getAttribute("list");
+    System.out.println(list);
+
 
 %>
 <!DOCTYPE html>
@@ -43,7 +40,7 @@
             <a href="bookmark-group.jsp">북마크 그룹 관리</a>
         </div>
 
-        <form action="/" method="get">
+        <form action="getWifi.jsp" method="post">
             <label for="lat">
                 LAT : <input type="text" id="lat" name="lat" value="<%= lat %>"/>,
             </label>
