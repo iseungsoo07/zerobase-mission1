@@ -4,10 +4,13 @@
     int id = Integer.parseInt(request.getParameter("id"));
 
     BookmarkService bookmarkService = new BookmarkService();
-    bookmarkService.removeBookmarkGroup(id);
+    if(bookmarkService.removeBookmarkGroup(id)) {
+%>
+        <script>
+            alert('북마크 그룹 정보를 삭제하였습니다.');
+            location.href = "bookmark-group.jsp";
+        </script>
+<%
+    }
 %>
 
-<script>
-    alert('북마크 그룹 정보를 삭제하였습니다.');
-    location.href = "bookmark-group.jsp";
-</script>

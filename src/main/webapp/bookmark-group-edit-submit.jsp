@@ -8,10 +8,13 @@
     int bookmarkGroupSeq = Integer.parseInt(request.getParameter("bookmark_group_seq"));
 
     BookmarkService bookmarkService = new BookmarkService();
-    bookmarkService.editBookmarkGroup(bookmarkGroupName, bookmarkGroupSeq, id);
+    if (bookmarkService.editBookmarkGroup(bookmarkGroupName, bookmarkGroupSeq, id)) {
+%>
+        <script>
+            alert('북마크 그룹 정보를 수정하였습니다.');
+            location.href = "bookmark-group.jsp";
+        </script>
+<%
+    }
 %>
 
-<script>
-    alert('북마크 그룹 정보를 수정하였습니다.');
-    location.href = "bookmark-group.jsp";
-</script>

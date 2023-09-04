@@ -1,4 +1,3 @@
-<%@ page import="zerobase.mission1.dto.BookmarkGroupDTO" %>
 <%@ page import="zerobase.mission1.service.BookmarkService" %>
 <%@ page import="zerobase.mission1.dto.BookmarkDTO" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>

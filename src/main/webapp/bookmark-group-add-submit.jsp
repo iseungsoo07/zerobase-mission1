@@ -3,9 +3,12 @@
 <%
     request.setCharacterEncoding("UTF-8");
     BookmarkService bookmarkService = new BookmarkService();
-    bookmarkService.addBookmarkGroup(request.getParameter("bookmark_name"), Integer.parseInt(request.getParameter("bookmark_seq")));
+    if (bookmarkService.addBookmarkGroup(request.getParameter("bookmark_name"), Integer.parseInt(request.getParameter("bookmark_seq")))) {
 %>
 <script>
     alert('북마크 그룹 정보를 추가하였습니다.');
     location.href = 'bookmark-group.jsp';
 </script>
+<%
+    }
+%>

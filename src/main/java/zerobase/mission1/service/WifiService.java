@@ -22,10 +22,6 @@ public class WifiService {
         return wifiRepository.getWifi(id);
     }
 
-    public boolean saveHistory(Pos pos) {
-        return wifiRepository.saveHistory(pos);
-    }
-
     public ArrayList<PositionHisotry> getHistory() {
         return wifiRepository.getHistory();
     }

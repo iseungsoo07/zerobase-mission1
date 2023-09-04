@@ -9,10 +9,13 @@
     if (answer) {
         <%
             WifiService wifiService = new WifiService();
-            wifiService.removeHistory(Integer.parseInt(request.getParameter("id")));
+            if(wifiService.removeHistory(Integer.parseInt(request.getParameter("id")))) {
         %>
-        alert("삭제 완료되었습니다.");
-        location.href = "history.jsp";
+                alert("삭제 완료되었습니다.");
+                location.href = "history.jsp";
+        <%
+            }
+        %>
     } else {
         history.go(-1);
     }

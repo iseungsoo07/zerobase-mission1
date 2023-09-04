@@ -26,7 +26,7 @@
     </head>
     <body>
         <div style="text-align: center">
-            <% if (isFirst) {%>
+            <% if (isFirst) { %>
             <h1><%=totalCnt%>개의 WIFI 정보를 정상적으로 저장하였습니다.</h1>
             <% } else { %>
             <h1>와이파이 정보가 이미 저장되어 있습니다.</h1>
