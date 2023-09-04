@@ -41,7 +41,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center">
-                        <a href="/bookmark-group.jsp">돌아가기</a> |
+                        <a href="bookmark-group.jsp">돌아가기</a> |
                         <input type="submit" value="삭제">
                     </td>
                 </tr>
